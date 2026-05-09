@@ -1,6 +1,6 @@
 # 🔌 史诗之API注册器
 
-> 作者：Mon3tr | 版本：v1.0 | 让每位干员用自己的API额度
+> 作者：Mon3tr | 版本：v1.0 | AstrBot >=3.0 | aiocqhttp | 让每位干员用自己的API额度
 
 ## 功能介绍
 

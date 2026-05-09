@@ -1,13 +1,20 @@
 name: astrbot_plugin_api_bind
 display_name: 史诗之API注册器🔌
-desc: 用户可注册自定义API账号，切换使用自己的API额度和模型
+short_desc: 用户可注册自定义API账号，切换自己的API额度和模型
+desc: 用户可注册自定义API账号，切换使用自己的API额度和模型。支持注册/切换/测试/管理API，LLM请求自动拦截，无需手动配置。
 version: v1.0
 author: Mon3tr
+astrbot_version: ">=3.0,<5"
+support_platforms:
+  - aiocqhttp
 repo: https://github.com/shishizhixie/astrbot_plugin_api_bind
 help: |
   可用命令:
   - 注册API - 注册自定义API账号
   - 切换自定义API - 切换到自定义API
+  - 切换API模型 - 切换当前账号的模型
+  - 添加模型 - 为当前账号添加模型
+  - 测试API - 测试当前绑定的API连接
   - 注销API - 注销账号
   - 恢复默认API - 恢复系统默认
   - API状态 - 查看当前状态
