@@ -3,7 +3,7 @@ display_name: 史诗之API注册器🔌
 desc: 用户可注册自定义API账号，切换使用自己的API额度和模型
 version: v1.0
 author: Mon3tr
-repo: https://github.com/Mon3tr/astrbot_plugin_api_bind
+repo: https://github.com/shishizhixie/astrbot_plugin_api_bind
 help: |
   可用命令:
   - 注册API - 注册自定义API账号
