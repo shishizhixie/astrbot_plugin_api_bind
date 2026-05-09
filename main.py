@@ -561,6 +561,53 @@ class ApiBindPlugin(Star):
             yield event.plain_result(result)
             event.stop_event()
 
+    # ==================== 低功耗运行模式 ====================
+    @event_filter.command("低功耗模式")
+    async def cmd_low_power(self, event: AstrMessageEvent):
+        sid = self._sid(event)
+        key = f"low_power_{sid}"
+        current = await self.get_kv_data(key, False)
+        new_state = not current
+        await self.put_kv_data(key, new_state)
+        if new_state:
+            yield event.plain_result(
+                "💤 已开启低功耗运行模式
+
+"
+                "所有插件注入已屏蔽，仅保留基础人格提示词与你的消息。
+"
+                "再次输入「低功耗模式」即可关闭。"
+            )
+        else:
+            yield event.plain_result(
+                "🔋 已关闭低功耗运行模式
+
+"
+                "插件恢复正常工作。"
+            )
+
+    # 低功耗拦截器（最高优先级，先存底稿）
+    @event_filter.on_llm_request(priority=1)
+    async def on_low_power_save(self, event, req):
+        sid = str(event.session_id)
+        low_power = await self.get_kv_data(f"low_power_{sid}", False)
+        if not low_power:
+            return
+        # 保存基础system_prompt（此时还没被其他插件修改过）
+        self._low_power_base_sp = req.system_prompt
+
+    # 低功耗清理器（最低优先级，最后清场）
+    @event_filter.on_llm_request(priority=99)
+    async def on_low_power_clean(self, event, req):
+        sid = str(event.session_id)
+        low_power = await self.get_kv_data(f"low_power_{sid}", False)
+        if not low_power:
+            return
+        # 还原到基础system_prompt，剥离所有插件注入
+        base = getattr(self, '_low_power_base_sp', req.system_prompt)
+        req.system_prompt = base
+        logger.info(f"💤 低功耗模式：已清理插件注入，system_prompt长度={len(base)}")
+
     # ==================== LLM请求拦截 ====================
     @event_filter.on_llm_request(priority=10)
     async def on_llm_request(self, event, req):
